@@ -17,6 +17,9 @@ import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+import org.rajawali3d.surface.IRajawaliSurface;
+import org.rajawali3d.surface.RajawaliSurfaceView;
 
 
 public class MainActivity extends ActionBarActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
@@ -25,8 +28,8 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     private Camera mCamera;
     private GLSurfaceView mSurfaceView;
     private MyGLSurfaceView mGLView;
-    private CameraPreview mCameraPreview;
     private CameraBridgeViewBase mOpenCvCameraView;
+    Renderer renderer;
 
     static {
         if (!OpenCVLoader.initDebug()) {
@@ -36,7 +39,14 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     }
 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        return inputFrame.rgba();
+        Mat m = inputFrame.gray();
+        Mat c = new Mat();
+        // Mat e = new Mat();
+        // Imgproc.Canny(m, e, 50, 60);
+        Imgproc.HoughCircles(m, c, Imgproc.HOUGH_GRADIENT, 1, m.rows() / 4);
+        return m;
+        // return inputFrame.gray();
+        // return inputFrame.rgba();
     }
 
     public void onCameraViewStarted(int width, int height) {
@@ -67,6 +77,15 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_main);
 
+        final RajawaliSurfaceView surface = new RajawaliSurfaceView(this);
+        surface.setFrameRate(60.0);
+        surface.setRenderMode(IRajawaliSurface.RENDERMODE_WHEN_DIRTY);
+
+        setContentView(surface);
+
+        renderer = new Renderer(this);
+        surface.setSurfaceRenderer(renderer);
+
         // When working with the camera, it's useful to stick to one orientation.
         // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -77,21 +96,13 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mGLView = new MyGLSurfaceView(this);
-        setContentView(mGLView);
+        // setContentView(mGLView);
 
         mOpenCvCameraView = new JavaCameraView(this, -1);
         // mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.HelloOpenCvView);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         addContentView(mOpenCvCameraView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-
-/*
-        mCamera = getCameraInstance();
-        mCameraPreview = new CameraPreview(this, mCamera);
-        // ...and add it, wrapping the full screen size.
-        addContentView(mCameraPreview, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-*/
     }
 
     /** A safe way to get an instance of the Camera object. */

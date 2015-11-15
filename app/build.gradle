@@ -23,4 +23,15 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile project(':openCVLibrary300')
+    compile 'org.rajawali3d:rajawali:1.0.186-SNAPSHOT@aar'
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+
+        // OSS Nexus Snapshots
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+    }
 }

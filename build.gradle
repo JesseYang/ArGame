@@ -1,8 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+project.ext.set('depRajawali', 'org.rajawali3d:rajawali:1.0.232-SNAPSHOT@aar')
+
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.2'
@@ -14,6 +17,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
     }
 }

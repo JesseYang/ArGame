@@ -4,4 +4,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_rajawali">RajawaliActivity</string>
+    <string name="title_activity_test_open_cv">TestOpenCV</string>
 </resources>
