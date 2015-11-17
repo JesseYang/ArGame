@@ -2,11 +2,11 @@ package com.efei.kids.argame.views;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.efei.kids.argame.HoughResultData;
@@ -26,6 +26,7 @@ public class InfoView extends FrameLayout {
     private TextView height_tv;
     private TextView info_hough_time_tv;
     private TextView info_function_time_tv;
+    private LinearLayout info_view_wrapper;
 
     public InfoView(Context context) {
         super(context);
@@ -35,10 +36,10 @@ public class InfoView extends FrameLayout {
     public void setAnchorView() {
 
         LayoutParams frameParams = new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
         );
-        frameParams.gravity = Gravity.LEFT;
+        // frameParams.gravity = Gravity.;
 
         View v = makeControllerView();
         ((Activity)mContext).addContentView(v, frameParams);
@@ -61,6 +62,7 @@ public class InfoView extends FrameLayout {
         height_tv = (TextView) v.findViewById(R.id.height_tv);
         info_hough_time_tv = (TextView) v.findViewById(R.id.info_hough_time_tv);
         info_function_time_tv = (TextView) v.findViewById(R.id.info_function_time_tv);
+        info_view_wrapper = (LinearLayout) v.findViewById(R.id.info_view_wrapper);
     }
 
     public void setInternalTime(long internalTime) {

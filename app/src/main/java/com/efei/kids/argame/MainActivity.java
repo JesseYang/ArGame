@@ -53,37 +53,23 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
             updateInternalTime(internalTime);
         }
         lastFrameTime = curFrameTime;
-        Mat m = inputFrame.gray();
+        Mat grayMat = inputFrame.gray();
 
         if (calFirstHough == false) {
             calFirstHough = true;
             CalFirstHoughTask t = new CalFirstHoughTask(this);
-            t.execute(m);
+            t.execute(grayMat);
         }
-        /*
-        if (data != null && data.circleNumber > 0) {
 
-            // convert matrix to bitmap
-            Bitmap bmp = Bitmap.createBitmap(m.cols(), m.rows(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bmp);
-            canvas.drawBitmap(bmp, new Matrix(), null);
-            Paint paint = new Paint();
-            paint.setColor(Color.RED);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(8);
-            canvas.drawArc(new RectF(data.x - data.r, data.y - data.r, data.x + data.r, data.y + data.r), 0, 360, false, paint);
-            Mat plot = new Mat(bmp.getHeight(), bmp.getWidth(), CvType.CV_8U, new Scalar(1));
-
-            return plot;
+        if (condition.show_image_type == 0) {
+            return inputFrame.rgba();
+        } else if (condition.show_image_type == 1) {
+            return grayMat;
         } else {
-            // Mat edgeMat = new Mat();
-            // Imgproc.Canny(m, edgeMat, 100 / 2, 100);
-            return m;
+            Mat edgeMat = new Mat();
+            Imgproc.Canny(grayMat, edgeMat, condition.canny_threshold / 2, condition.canny_threshold);
+            return edgeMat;
         }
-        */
-        Mat edgeMat = new Mat();
-        Imgproc.Canny(m, edgeMat, condition.canny_threshold / 2, condition.canny_threshold);
-        return edgeMat;
     }
 
 
@@ -142,10 +128,11 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         }
     };
 
-    public void setHoughCondition(int canny_threshold, int accumelator_reso, int accumelator_threshold) {
+    public void setHoughCondition(int canny_threshold, int accumelator_reso, int accumelator_threshold, int show_image_type) {
         condition.canny_threshold = canny_threshold;
         condition.accumelator_reso = accumelator_reso;
         condition.accumelator_threshold = accumelator_threshold;
+        condition.show_image_type = show_image_type;
     }
 
     public HoughResultData getHoughResult() {
@@ -162,7 +149,6 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
 
         final RajawaliSurfaceView surface = new RajawaliSurfaceView(this);
         surface.setFrameRate(30.0);
-        // surface.setRenderMode(IRajawaliSurface.RENDERMODE_WHEN_DIRTY);
         surface.setRenderMode(IRajawaliSurface.RENDERMODE_CONTINUOUSLY);
 
         setContentView(surface);

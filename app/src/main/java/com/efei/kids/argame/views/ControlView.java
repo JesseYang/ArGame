@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RadioGroup;
 
 import com.efei.kids.argame.MainActivity;
 import com.efei.kids.argame.R;
@@ -21,6 +22,7 @@ public class ControlView extends FrameLayout {
     private EditText control_canny_threshold_et;
     private EditText control_accumelator_reso_et;
     private EditText control_accumelator_threshold_et;
+    RadioGroup control_show_image_type_rg;
 
     public ControlView(Context context) {
         super(context);
@@ -51,6 +53,7 @@ public class ControlView extends FrameLayout {
         control_canny_threshold_et = (EditText) v.findViewById(R.id.control_canny_threshold_et);
         control_accumelator_reso_et = (EditText) v.findViewById(R.id.control_accumelator_reso_et);
         control_accumelator_threshold_et = (EditText) v.findViewById(R.id.control_accumelator_threshold_et);
+        control_show_image_type_rg = (RadioGroup) v.findViewById(R.id.control_show_image_type_rg);
 
         update_btn.setOnClickListener(new OnClickListener() {
             @Override
@@ -58,7 +61,12 @@ public class ControlView extends FrameLayout {
                 int canny_threshold = Integer.valueOf(control_canny_threshold_et.getText().toString());
                 int accumelator_reso = Integer.valueOf(control_accumelator_reso_et.getText().toString());
                 int accumelator_threshold = Integer.valueOf(control_accumelator_threshold_et.getText().toString());
-                ((MainActivity)mContext).setHoughCondition(canny_threshold, accumelator_reso, accumelator_threshold);
+
+                int control_show_image_type_rb_id = control_show_image_type_rg.getCheckedRadioButtonId();
+                View control_show_image_type_rb = control_show_image_type_rg.findViewById(control_show_image_type_rb_id);
+                int control_show_image_type = control_show_image_type_rg.indexOfChild(control_show_image_type_rb);
+
+                ((MainActivity)mContext).setHoughCondition(canny_threshold, accumelator_reso, accumelator_threshold, control_show_image_type);
             }
         });
     }

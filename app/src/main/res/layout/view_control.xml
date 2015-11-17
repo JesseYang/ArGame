@@ -61,12 +61,40 @@
             android:text="100"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RadioGroup
+            android:id="@+id/control_show_image_type_rg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/control_original_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="显示原图"
+                android:textColor="@color/green"/>
+            <RadioButton android:id="@+id/control_gray_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="显示灰度图"
+                android:textColor="@color/green"/>
+            <RadioButton android:id="@+id/control_edge_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="显示边缘检测图"
+                android:textColor="@color/green"/>
+        </RadioGroup>
+    </LinearLayout>
+
     <Button
         android:id="@+id/update_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/green"
-        android:background="@color/purple"
+        android:background="@color/transparent"
         android:text="更新"/>
 
 </LinearLayout>
