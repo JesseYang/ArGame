@@ -128,11 +128,12 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         }
     };
 
-    public void setHoughCondition(int canny_threshold, int accumelator_reso, int accumelator_threshold, int show_image_type) {
+    public void setHoughCondition(int canny_threshold, int accumelator_reso, int accumelator_threshold, int show_image_type, int image_range) {
         condition.canny_threshold = canny_threshold;
         condition.accumelator_reso = accumelator_reso;
         condition.accumelator_threshold = accumelator_threshold;
         condition.show_image_type = show_image_type;
+        condition.image_range = image_range;
     }
 
     public HoughResultData getHoughResult() {

@@ -23,6 +23,7 @@ public class ControlView extends FrameLayout {
     private EditText control_accumelator_reso_et;
     private EditText control_accumelator_threshold_et;
     RadioGroup control_show_image_type_rg;
+    RadioGroup control_image_range_rg;
 
     public ControlView(Context context) {
         super(context);
@@ -54,6 +55,7 @@ public class ControlView extends FrameLayout {
         control_accumelator_reso_et = (EditText) v.findViewById(R.id.control_accumelator_reso_et);
         control_accumelator_threshold_et = (EditText) v.findViewById(R.id.control_accumelator_threshold_et);
         control_show_image_type_rg = (RadioGroup) v.findViewById(R.id.control_show_image_type_rg);
+        control_image_range_rg = (RadioGroup) v.findViewById(R.id.control_image_range_rg);
 
         update_btn.setOnClickListener(new OnClickListener() {
             @Override
@@ -66,7 +68,11 @@ public class ControlView extends FrameLayout {
                 View control_show_image_type_rb = control_show_image_type_rg.findViewById(control_show_image_type_rb_id);
                 int control_show_image_type = control_show_image_type_rg.indexOfChild(control_show_image_type_rb);
 
-                ((MainActivity)mContext).setHoughCondition(canny_threshold, accumelator_reso, accumelator_threshold, control_show_image_type);
+                int control_image_range_rb_id = control_image_range_rg.getCheckedRadioButtonId();
+                View control_image_range_rb = control_image_range_rg.findViewById(control_image_range_rb_id);
+                int control_image_range = control_image_range_rg.indexOfChild(control_image_range_rb);
+
+                ((MainActivity)mContext).setHoughCondition(canny_threshold, accumelator_reso, accumelator_threshold, control_show_image_type, control_image_range);
             }
         });
     }

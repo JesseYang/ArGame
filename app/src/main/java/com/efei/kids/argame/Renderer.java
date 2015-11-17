@@ -90,6 +90,7 @@ public class Renderer extends RajawaliRenderer {
             sphere.setVisible(true);
             float x_coord = pixel2coord(data.x - 1280 / 2);
             float y_coord = pixel2coord(data.y - 720 / 2);
+            sphere.setScale(pixel2coord(data.r) / 0.2);
             sphere.setPosition(x_coord, -y_coord, 0);
         }
 

@@ -13,7 +13,10 @@ public class HoughConditionData {
     public int last_x;
     public int last_y;
     public int last_r;
-    public boolean use_last_data;
+    public int last_circleNumber;
+
+    // 0 for full image, 1 for part image
+    public int image_range;
 
     // 0 for original image, 1 for grey image， 2 for edge image
     public int show_image_type;
@@ -25,6 +28,12 @@ public class HoughConditionData {
         this.radius_lower = 0;
         this.radius_higher = 0;
         this.show_image_type = 1;
-        
+
+        this.last_x = -1;
+        this.last_y = -1;
+        this.last_r = -1;
+        this.image_range = 0;
+
+        this.last_circleNumber = 0;
     }
 }

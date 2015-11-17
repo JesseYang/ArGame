@@ -89,6 +89,31 @@
         </RadioGroup>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RadioGroup
+            android:id="@+id/control_image_range_rg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/control_full_image_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="全图查找"
+                android:textColor="@color/green"/>
+            <RadioButton
+                android:id="@+id/control_part_image_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="局部追踪"
+                android:shadowColor="@color/green"
+                android:textColor="@color/green"/>
+        </RadioGroup>
+    </LinearLayout>
+
     <Button
         android:id="@+id/update_btn"
         android:layout_width="wrap_content"
