@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/internal_frame_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/internal_frame_time_tv_prefix"
+        android:textColor="@color/red"/>
+
+    <TextView
+        android:id="@+id/hough_number_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hough_number_tv_prefix"
+        android:textColor="@color/red"/>
+
+    <TextView
+        android:id="@+id/x_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/x_tv_prefix"
+        android:textColor="@color/red"/>
+
+    <TextView
+        android:id="@+id/y_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/y_tv_prefix"
+        android:textColor="@color/red"/>
+
+    <TextView
+        android:id="@+id/r_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/r_tv_prefix"
+        android:textColor="@color/red"/>
+
+    <TextView
+        android:id="@+id/width_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/width_tv_prefix"
+        android:textColor="@color/red"/>
+
+    <TextView
+        android:id="@+id/height_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/height_tv_prefix"
+        android:textColor="@color/red"/>
+
+    <TextView
+        android:id="@+id/info_hough_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/info_hough_time_tv_prefix"
+        android:textColor="@color/red"/>
+
+    <TextView
+        android:id="@+id/info_function_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/info_function_time_tv_prefix"
+        android:textColor="@color/red"/>
+
+</LinearLayout>

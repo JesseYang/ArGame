@@ -6,4 +6,13 @@
     <string name="title_activity_camera">CameraActivity</string>
     <string name="title_activity_rajawali">RajawaliActivity</string>
     <string name="title_activity_test_open_cv">TestOpenCV</string>
+    <string name="internal_frame_time_tv_prefix">两帧之间的时间距离（ms）：</string>
+    <string name="hough_number_tv_prefix">检测到圆的个数：</string>
+    <string name="x_tv_prefix">检测到圆心横坐标：</string>
+    <string name="y_tv_prefix">检测到圆心纵坐标：</string>
+    <string name="r_tv_prefix">检测到圆半径：</string>
+    <string name="info_hough_time_tv_prefix">Hough圆检测执行时间（ms）：</string>
+    <string name="info_function_time_tv_prefix">单次检测总时间（ms）：</string>
+    <string name="width_tv_prefix">屏幕宽度：</string>
+    <string name="height_tv_prefix">屏幕高度：</string>
 </resources>

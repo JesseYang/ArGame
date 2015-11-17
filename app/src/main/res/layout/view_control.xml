@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text="Canny检测上限阈值："
+            android:textColor="@color/green"/>
+        <EditText
+            android:id="@+id/control_canny_threshold_et"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:textColor="@color/green"
+            android:text="100"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text="累加器分辨率比例："
+            android:textColor="@color/green"/>
+        <EditText
+            android:id="@+id/control_accumelator_reso_et"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:textColor="@color/green"
+            android:text="8"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text="Hough变换累加器阈值："
+            android:textColor="@color/green"/>
+        <EditText
+            android:id="@+id/control_accumelator_threshold_et"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:textColor="@color/green"
+            android:text="100"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/update_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/green"
+        android:background="@color/purple"
+        android:text="更新"/>
+
+</LinearLayout>

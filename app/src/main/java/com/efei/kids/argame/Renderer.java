@@ -4,7 +4,12 @@ import android.content.Context;
 import android.view.MotionEvent;
 
 import org.rajawali3d.Object3D;
+import org.rajawali3d.OrthographicCamera;
 import org.rajawali3d.lights.DirectionalLight;
+import org.rajawali3d.materials.Material;
+import org.rajawali3d.materials.methods.DiffuseMethod;
+import org.rajawali3d.materials.methods.SpecularMethod;
+import org.rajawali3d.math.vector.Vector3;
 import org.rajawali3d.primitives.Sphere;
 import org.rajawali3d.renderer.RajawaliRenderer;
 
@@ -22,18 +27,37 @@ public class Renderer extends RajawaliRenderer {
     public Renderer(Context context) {
         super(context);
         this.context = context;
-        setFrameRate(30);
+        setFrameRate(60.0);
     }
 
     public void initScene(){
-        /*
-        PointLight pointLight = new PointLight();
-        pointLight.setY(2);
-        pointLight.setPower(1.5f);
 
-        getCurrentScene().addLight(pointLight);
-        getCurrentCamera().setPosition(0, 2, 6);
-        getCurrentCamera().setLookAt(0, 0, 0);
+        HoughResultData data = ((MainActivity)context).getHoughResult();
+
+        float x, y, r;
+        if (data == null || data.circleNumber == 0) {
+            x = 0.0f;
+            y = 0.0f;
+            r = 0.4f;
+        } else {
+            x = 0.0f;
+            y = 0.0f;
+            r = 0.2f;
+        }
+
+        OrthographicCamera orthoCam = new OrthographicCamera();
+        orthoCam.setLookAt(0, 0, 0);
+        orthoCam.enableLookAt();
+        orthoCam.setY(0);
+        orthoCam.setX(0);
+        getCurrentScene().switchCamera(orthoCam);
+
+        final DirectionalLight directionalLight = new DirectionalLight();
+        directionalLight.setPosition(0.0, 0.0, 1.0);
+        directionalLight.setPower(1.5f);
+        directionalLight.setLookAt(Vector3.ZERO);
+        directionalLight.enableLookAt();
+        getCurrentScene().addLight(directionalLight);
 
         Material sphereMaterial = new Material();
         sphereMaterial.setDiffuseMethod(new DiffuseMethod.Lambert());
@@ -42,56 +66,18 @@ public class Renderer extends RajawaliRenderer {
         sphereMaterial.setSpecularMethod(phongMethod);
         sphereMaterial.setAmbientIntensity(0, 0, 0);
         sphereMaterial.enableLighting(true);
-        Sphere rootSphere = new Sphere(.2f, 12, 12);
+        Sphere rootSphere = new Sphere(r, 12, 12);
         rootSphere.setMaterial(sphereMaterial);
         rootSphere.setRenderChildrenAsBatch(true);
         rootSphere.setVisible(false);
         getCurrentScene().addChild(rootSphere);
 
-        // -- inner ring
-
-        float radius = .8f;
-        int count = 0;
-
-        for (int i = 0; i < 360; i += 36) {
-            double radians = MathUtil.degreesToRadians(i);
-            int color = 0xfed14f;
-            if (count % 3 == 0)
-                color = 0x10a962;
-            else if (count % 3 == 1)
-                color = 0x4184fa;
-            count++;
-
-            Object3D sphere = rootSphere.clone(false);
-            sphere.setPosition((float) Math.sin(radians) * radius, 0,
-                    (float) Math.cos(radians) * radius);
-            sphere.setMaterial(sphereMaterial);
-            sphere.setColor(color);
-            rootSphere.addChild(sphere);
-        }
-
-        // -- outer ring
-
-        radius = 2.4f;
-        count = 0;
-
-        for (int i = 0; i < 360; i += 12) {
-            double radians = MathUtil.degreesToRadians(i);
-            int color = 0xfed14f;
-            if (count % 3 == 0)
-                color = 0x10a962;
-            else if (count % 3 == 1)
-                color = 0x4184fa;
-            count++;
-
-            Object3D sphere = rootSphere.clone(false);
-            sphere.setPosition(Math.sin(radians) * radius, 0,
-                    Math.cos(radians) * radius);
-            sphere.setMaterial(sphereMaterial);
-            sphere.setColor(color);
-            rootSphere.addChild(sphere);
-        }
-        */
+        int color = 0xfed14f;
+        Object3D sphere = rootSphere.clone(false);
+        sphere.setPosition(x, y, 0);
+        sphere.setMaterial(sphereMaterial);
+        sphere.setColor(color);
+        rootSphere.addChild(sphere);
     }
 
     public void onTouchEvent(MotionEvent event){

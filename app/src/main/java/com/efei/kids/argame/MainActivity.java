@@ -1,7 +1,8 @@
 package com.efei.kids.argame;
 
+import android.content.Context;
 import android.hardware.Camera;
-import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -10,6 +11,9 @@ import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+
+import com.efei.kids.argame.views.ControlView;
+import com.efei.kids.argame.views.InfoView;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -24,12 +28,16 @@ import org.rajawali3d.surface.RajawaliSurfaceView;
 
 public class MainActivity extends ActionBarActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-
-    private Camera mCamera;
-    private GLSurfaceView mSurfaceView;
-    private MyGLSurfaceView mGLView;
     private CameraBridgeViewBase mOpenCvCameraView;
-    Renderer renderer;
+    private InfoView infoView;
+    private ControlView controlView;
+    private Renderer renderer;
+    private long lastFrameTime;
+
+    public boolean calFirstHough;
+
+    private HoughResultData data;
+    private HoughConditionData condition;
 
     static {
         if (!OpenCVLoader.initDebug()) {
@@ -39,14 +47,76 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     }
 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+        long curFrameTime = System.nanoTime();
+        if (lastFrameTime != 0L) {
+            long internalTime = curFrameTime - lastFrameTime;
+            updateInternalTime(internalTime);
+        }
+        lastFrameTime = curFrameTime;
         Mat m = inputFrame.gray();
-        Mat c = new Mat();
-        // Mat e = new Mat();
-        // Imgproc.Canny(m, e, 50, 60);
-        Imgproc.HoughCircles(m, c, Imgproc.HOUGH_GRADIENT, 1, m.rows() / 4);
-        return m;
-        // return inputFrame.gray();
-        // return inputFrame.rgba();
+
+        if (calFirstHough == false) {
+            calFirstHough = true;
+            CalFirstHoughTask t = new CalFirstHoughTask(this);
+            t.execute(m);
+        }
+        /*
+        if (data != null && data.circleNumber > 0) {
+
+            // convert matrix to bitmap
+            Bitmap bmp = Bitmap.createBitmap(m.cols(), m.rows(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bmp);
+            canvas.drawBitmap(bmp, new Matrix(), null);
+            Paint paint = new Paint();
+            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(8);
+            canvas.drawArc(new RectF(data.x - data.r, data.y - data.r, data.x + data.r, data.y + data.r), 0, 360, false, paint);
+            Mat plot = new Mat(bmp.getHeight(), bmp.getWidth(), CvType.CV_8U, new Scalar(1));
+
+            return plot;
+        } else {
+            // Mat edgeMat = new Mat();
+            // Imgproc.Canny(m, edgeMat, 100 / 2, 100);
+            return m;
+        }
+        */
+        Mat edgeMat = new Mat();
+        Imgproc.Canny(m, edgeMat, condition.canny_threshold / 2, condition.canny_threshold);
+        return edgeMat;
+    }
+
+
+    private class CalFirstHoughTask extends AsyncTask<Mat, Void, Void> {
+
+        private Context mContext;
+        public CalFirstHoughTask(Context context) {
+            this.mContext = context;
+        }
+
+        @Override
+        protected Void doInBackground(Mat... params) {
+            if (params.length == 0) {
+                return null;
+            }
+            data = CVTools.find_circle(params[0], condition);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void retval) {
+            calFirstHough = false;
+            infoView.setHoughResultData(data);
+        }
+    }
+
+    public void updateInternalTime(final long internalTime) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                infoView.setInternalTime(internalTime);
+            }
+        });
     }
 
     public void onCameraViewStarted(int width, int height) {
@@ -72,14 +142,28 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         }
     };
 
+    public void setHoughCondition(int canny_threshold, int accumelator_reso, int accumelator_threshold) {
+        condition.canny_threshold = canny_threshold;
+        condition.accumelator_reso = accumelator_reso;
+        condition.accumelator_threshold = accumelator_threshold;
+    }
+
+    public HoughResultData getHoughResult() {
+        return data;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_main);
+
+        lastFrameTime = 0L;
+        calFirstHough = false;
+        condition = new HoughConditionData();
 
         final RajawaliSurfaceView surface = new RajawaliSurfaceView(this);
-        surface.setFrameRate(60.0);
-        surface.setRenderMode(IRajawaliSurface.RENDERMODE_WHEN_DIRTY);
+        surface.setFrameRate(30.0);
+        // surface.setRenderMode(IRajawaliSurface.RENDERMODE_WHEN_DIRTY);
+        surface.setRenderMode(IRajawaliSurface.RENDERMODE_CONTINUOUSLY);
 
         setContentView(surface);
 
@@ -95,14 +179,17 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        mGLView = new MyGLSurfaceView(this);
-        // setContentView(mGLView);
 
         mOpenCvCameraView = new JavaCameraView(this, -1);
-        // mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.HelloOpenCvView);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
         addContentView(mOpenCvCameraView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        infoView = new InfoView(this);
+        infoView.setAnchorView();
+
+        controlView = new ControlView(this);
+        controlView.setAnchorView();
     }
 
     /** A safe way to get an instance of the Camera object. */
@@ -122,26 +209,11 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         super.onResume();
         // OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
         mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-        /*
-         * The activity must call the GL surface view's
-         * onResume() on activity onResume().
-         */
-        if (mSurfaceView != null) {
-            mSurfaceView.onResume();
-        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        /*
-         * The activity must call the GL surface view's
-         * onPause() on activity onPause().
-         */
-        if (mSurfaceView != null) {
-            mSurfaceView.onPause();
-        }
     }
 
     @Override
