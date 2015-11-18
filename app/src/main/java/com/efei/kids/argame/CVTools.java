@@ -25,10 +25,10 @@ public class CVTools {
         int row_start = 0;
         int row_end = 0;
         if (condition.image_range == 1 && condition.last_circleNumber > 0) {
-            col_start = condition.last_x - 2 * condition.last_r;
-            col_end = condition.last_x + 2 * condition.last_r;
-            row_start = condition.last_y - 2 * condition.last_r;
-            row_end = condition.last_y + 2 * condition.last_r;
+            col_start = Math.max(condition.last_x - 2 * condition.last_r, 0);
+            col_end = Math.min(condition.last_x + 2 * condition.last_r, grayMat.cols());
+            row_start = Math.max(condition.last_y - 2 * condition.last_r, 0);
+            row_end = Math.min(condition.last_y + 2 * condition.last_r, grayMat.rows());
             radius_lower = (int)Math.round(condition.last_r * 0.5);
             radius_higher = condition.last_r * 2;
             Imgproc.HoughCircles(grayMat.submat(row_start, row_end, col_start, col_end), circleMat, Imgproc.HOUGH_GRADIENT, accumelator_reso, 100, canny_threshold, accumelator_threshold, radius_lower, radius_higher);

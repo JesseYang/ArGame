@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     private Renderer renderer;
     private long lastFrameTime;
 
-    public boolean calFirstHough;
+    public boolean isCalHough;
 
     private HoughResultData data;
     private HoughConditionData condition;
@@ -55,8 +55,8 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         lastFrameTime = curFrameTime;
         Mat grayMat = inputFrame.gray();
 
-        if (calFirstHough == false) {
-            calFirstHough = true;
+        if (isCalHough == false) {
+            isCalHough = true;
             CalFirstHoughTask t = new CalFirstHoughTask(this);
             t.execute(grayMat);
         }
@@ -91,7 +91,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
 
         @Override
         protected void onPostExecute(Void retval) {
-            calFirstHough = false;
+            isCalHough = false;
             infoView.setHoughResultData(data);
         }
     }
@@ -145,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         super.onCreate(savedInstanceState);
 
         lastFrameTime = 0L;
-        calFirstHough = false;
+        isCalHough = false;
         condition = new HoughConditionData();
 
         final RajawaliSurfaceView surface = new RajawaliSurfaceView(this);
