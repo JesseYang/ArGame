@@ -1,8 +1,5 @@
 package com.efei.kids.argame;
 
-import android.content.Context;
-import android.hardware.Camera;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -39,6 +36,8 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     private HoughResultData data;
     private HoughConditionData condition;
 
+    private Mat edgeMat;
+
     static {
         if (!OpenCVLoader.initDebug()) {
             // Handle initialization error
@@ -53,12 +52,26 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
             updateInternalTime(internalTime);
         }
         lastFrameTime = curFrameTime;
-        Mat grayMat = inputFrame.gray();
+
+        if (data != null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    infoView.setHoughResultData(data);
+                }
+            });
+        }
+
+        final Mat grayMat = inputFrame.gray();
 
         if (isCalHough == false) {
             isCalHough = true;
-            CalFirstHoughTask t = new CalFirstHoughTask(this);
-            t.execute(grayMat);
+            new Thread(new Runnable() {
+                public void run() {
+                    data = CVTools.find_circle(grayMat, condition);
+                    isCalHough = false;
+                }
+            }).start();
         }
 
         if (condition.show_image_type == 0) {
@@ -66,33 +79,8 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         } else if (condition.show_image_type == 1) {
             return grayMat;
         } else {
-            Mat edgeMat = new Mat();
             Imgproc.Canny(grayMat, edgeMat, condition.canny_threshold / 2, condition.canny_threshold);
             return edgeMat;
-        }
-    }
-
-
-    private class CalFirstHoughTask extends AsyncTask<Mat, Void, Void> {
-
-        private Context mContext;
-        public CalFirstHoughTask(Context context) {
-            this.mContext = context;
-        }
-
-        @Override
-        protected Void doInBackground(Mat... params) {
-            if (params.length == 0) {
-                return null;
-            }
-            data = CVTools.find_circle(params[0], condition);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void retval) {
-            isCalHough = false;
-            infoView.setHoughResultData(data);
         }
     }
 
@@ -147,6 +135,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         lastFrameTime = 0L;
         isCalHough = false;
         condition = new HoughConditionData();
+        edgeMat = new Mat();
 
         final RajawaliSurfaceView surface = new RajawaliSurfaceView(this);
         surface.setFrameRate(30.0);
@@ -177,18 +166,6 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
 
         controlView = new ControlView(this);
         controlView.setAnchorView();
-    }
-
-    /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
     }
 
     @Override
