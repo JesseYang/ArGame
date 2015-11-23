@@ -15,4 +15,5 @@
     <string name="info_function_time_tv_prefix">单次检测总时间（ms）：</string>
     <string name="width_tv_prefix">屏幕宽度：</string>
     <string name="height_tv_prefix">屏幕高度：</string>
+    <string name="title_activity_sensor">SensorActivity</string>
 </resources>

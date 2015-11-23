@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -23,6 +23,7 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
@@ -62,6 +63,14 @@ public class TestOpenCV extends ActionBarActivity {
     EditText crop_y_et;
     EditText crop_width_et;
     EditText crop_height_et;
+
+    EditText hsv_lower_h_et;
+    EditText hsv_lower_s_et;
+    EditText hsv_lower_v_et;
+    EditText hsv_higher_h_et;
+    EditText hsv_higher_s_et;
+    EditText hsv_higher_v_et;
+
 
 
     private static final String folder = "/storage/emulated/0/argame/";
@@ -117,6 +126,13 @@ public class TestOpenCV extends ActionBarActivity {
         crop_width_et = (EditText) findViewById(R.id.crop_width_et);
         crop_height_et = (EditText) findViewById(R.id.crop_height_et);
 
+        hsv_lower_h_et = (EditText) findViewById(R.id.hsv_lower_h_et);
+        hsv_lower_s_et = (EditText) findViewById(R.id.hsv_lower_s_et);
+        hsv_lower_v_et = (EditText) findViewById(R.id.hsv_lower_v_et);
+        hsv_higher_h_et = (EditText) findViewById(R.id.hsv_higher_h_et);
+        hsv_higher_s_et = (EditText) findViewById(R.id.hsv_higher_s_et);
+        hsv_higher_v_et = (EditText) findViewById(R.id.hsv_higher_v_et);
+
         begin_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,6 +168,14 @@ public class TestOpenCV extends ActionBarActivity {
         View crop_image_rb = crop_image_rg.findViewById(crop_image_rb_id);
         int crop_image = crop_image_rg.indexOfChild(crop_image_rb);
 
+        int hsv_lower_h = Integer.valueOf(hsv_lower_h_et.getText().toString());
+        int hsv_lower_s = Integer.valueOf(hsv_lower_s_et.getText().toString());
+        int hsv_lower_v = Integer.valueOf(hsv_lower_v_et.getText().toString());
+
+        int hsv_higher_h = Integer.valueOf(hsv_higher_h_et.getText().toString());
+        int hsv_higher_s = Integer.valueOf(hsv_higher_s_et.getText().toString());
+        int hsv_higher_v = Integer.valueOf(hsv_higher_v_et.getText().toString());
+
         // read the image and show in the screen
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = in_sample_size;
@@ -171,22 +195,36 @@ public class TestOpenCV extends ActionBarActivity {
         Utils.bitmapToMat(bm, imageMat);
         image_reso_tv.setText("图像分辨率：" + imageMat.size());
 
+        // get the hsv image Mat
+        Mat hsvMat = new Mat();
+        Mat threshold1Mat = new Mat();
+        Mat threshold2Mat = new Mat();
+        Mat thresholdMat = new Mat();
+        Mat resultMat = new Mat();
+        Imgproc.cvtColor(imageMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+        // Core.inRange(hsvMat, new Scalar(160, 80, 30), new Scalar(180, 255, 255), thresholdMat);
+        long tt1 = System.nanoTime();
+        Core.inRange(hsvMat, new Scalar(0, 80, 100), new Scalar(15, 255, 255), threshold1Mat);
+        Core.inRange(hsvMat, new Scalar(165, 80, 100), new Scalar(180, 255, 255), threshold2Mat);
+        Core.bitwise_or(threshold1Mat, threshold2Mat, thresholdMat);
+        long tt2 = System.nanoTime() - tt1;
         // get the grey scale image mat
         Mat greyMat = new Mat();
         Imgproc.cvtColor(imageMat, greyMat, Imgproc.COLOR_BGR2GRAY);
         // Imgproc.GaussianBlur(greyMat, greyMat, new Size(9, 9), 2, 2);
 
         // get the edge image mat
-        Mat edgeMat = new Mat();
-        Imgproc.Canny(greyMat, edgeMat, canny_threshold / 2, canny_threshold);
+        // Mat edgeMat = new Mat();
+        // Imgproc.Canny(greyMat, edgeMat, canny_threshold / 2, canny_threshold);
 
         // convert the Mat variable back to image
         Bitmap new_bm = Bitmap.createBitmap(imageMat.cols(), imageMat.rows(), Bitmap.Config.ARGB_8888);
 
+
         if (show_image_type == 0) {
-            Utils.matToBitmap(greyMat, new_bm);
+            Utils.matToBitmap(imageMat, new_bm);
         } else {
-            Utils.matToBitmap(edgeMat, new_bm);
+            Utils.matToBitmap(thresholdMat, new_bm);
         }
 
         // run hough circles to find the ball
@@ -198,8 +236,8 @@ public class TestOpenCV extends ActionBarActivity {
         paint.setStrokeWidth(8);
         Mat circleMat = new Mat();
         long startTime = System.nanoTime();
-        Imgproc.HoughCircles(greyMat, circleMat, Imgproc.HOUGH_GRADIENT, accumelator_reso, 100, canny_threshold, accumelator_threshold, radius_lower, radius_higher);
-        long consumingTime = System.nanoTime() - startTime;
+        Imgproc.HoughCircles(thresholdMat, circleMat, Imgproc.HOUGH_GRADIENT, accumelator_reso, 100, canny_threshold, accumelator_threshold, radius_lower, radius_higher);
+        long consumingTime = System.nanoTime() - startTime + tt2;
         hough_tv.setText("Hough圆检测时间：" + String.valueOf(Math.round(consumingTime * 1.0 / 1000000 * 100) * 1.0 / 100) + "ms");
         circle_number_tv.setText("检测出圆的个数：" + String.valueOf(circleMat.cols()));
         double circleData[];

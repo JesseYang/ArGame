@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.efei.kids.argame.HoughResultData;
+import com.efei.kids.argame.data.HoughResultData;
 import com.efei.kids.argame.R;
 
 public class InfoView extends FrameLayout {

@@ -1,5 +1,11 @@
 package com.efei.kids.argame;
 
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -9,6 +15,11 @@ import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.efei.kids.argame.data.EulerAngleData;
+import com.efei.kids.argame.data.HoughConditionData;
+import com.efei.kids.argame.data.HoughResultData;
+import com.efei.kids.argame.data.SensorData;
+import com.efei.kids.argame.views.AngleView;
 import com.efei.kids.argame.views.ControlView;
 import com.efei.kids.argame.views.InfoView;
 
@@ -18,16 +29,21 @@ import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
 import org.rajawali3d.surface.IRajawaliSurface;
 import org.rajawali3d.surface.RajawaliSurfaceView;
 
 
-public class MainActivity extends ActionBarActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+public class MainActivity extends ActionBarActivity implements CameraBridgeViewBase.CvCameraViewListener2, SensorEventListener {
+
+    private SensorManager mSensorManager;
+    private Sensor mRotationVectorSensor;
+    public SensorData mSensorData;
+
 
     private CameraBridgeViewBase mOpenCvCameraView;
     private InfoView infoView;
     private ControlView controlView;
+    private AngleView angleView;
     private Renderer renderer;
     private long lastFrameTime;
 
@@ -35,8 +51,12 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
 
     private HoughResultData data;
     private HoughConditionData condition;
+    private EulerAngleData eulerAngleData;
 
     private Mat edgeMat;
+
+    private CameraBridgeViewBase.CvCameraViewFrame currentFrame;
+    private int currentFrameIndex;
 
     static {
         if (!OpenCVLoader.initDebug()) {
@@ -46,42 +66,55 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
     }
 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+
+        currentFrame = inputFrame;
+        currentFrameIndex = (currentFrameIndex + 1) % 1000;
+        return inputFrame.rgba();
+
+        /****** RETURN COLOER FILTERED IMAGE ******/
+
+        /*
+        Mat colorMat = inputFrame.rgba();
+        Mat hsvMat = new Mat();
+        Mat threshold1Mat = new Mat();
+        Mat threshold2Mat = new Mat();
+        Mat thresholdMat = new Mat();
+        Imgproc.cvtColor(colorMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+        Core.inRange(hsvMat, new Scalar(0, 100, 50), new Scalar(10, 255, 255), threshold1Mat);
+        Core.inRange(hsvMat, new Scalar(170, 100, 50), new Scalar(180, 255, 255), threshold2Mat);
+        Core.bitwise_or(threshold1Mat, threshold2Mat, thresholdMat);
+        Imgproc.GaussianBlur(thresholdMat, thresholdMat, new Size(7, 7), 3, 3);
+        Imgproc.dilate(thresholdMat, thresholdMat, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3)));
+        Imgproc.erode(thresholdMat, thresholdMat, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3)));
+        // return thresholdMat;
+        return thresholdMat;
+        */
+
+
+
+
+
+        /****** SET FRAME INTERNAL TIME ******/
+        /*
         long curFrameTime = System.nanoTime();
         if (lastFrameTime != 0L) {
             long internalTime = curFrameTime - lastFrameTime;
             updateInternalTime(internalTime);
         }
         lastFrameTime = curFrameTime;
+        */
 
-        if (data != null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    infoView.setHoughResultData(data);
-                }
-            });
-        }
-
-        final Mat grayMat = inputFrame.gray();
-
-        if (isCalHough == false) {
-            isCalHough = true;
-            new Thread(new Runnable() {
-                public void run() {
-                    data = CVTools.find_circle(grayMat, condition);
-                    isCalHough = false;
-                }
-            }).start();
-        }
-
+        /****** RETURN REQUIRED IMAGE ******/
+        /*
         if (condition.show_image_type == 0) {
             return inputFrame.rgba();
         } else if (condition.show_image_type == 1) {
-            return grayMat;
+            return inputFrame.gray();
         } else {
-            Imgproc.Canny(grayMat, edgeMat, condition.canny_threshold / 2, condition.canny_threshold);
+            Imgproc.Canny(inputFrame.gray(), edgeMat, condition.canny_threshold / 2, condition.canny_threshold);
             return edgeMat;
         }
+        */
     }
 
     public void updateInternalTime(final long internalTime) {
@@ -116,6 +149,16 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         }
     };
 
+    public void setEulerAngleData(int yaw, int pitch, int roll) {
+        this.eulerAngleData.yaw = yaw;
+        this.eulerAngleData.pitch = pitch;
+        this.eulerAngleData.roll = roll;
+    }
+
+    public EulerAngleData getEulerAngleData() {
+        return this.eulerAngleData;
+    }
+
     public void setHoughCondition(int canny_threshold, int accumelator_reso, int accumelator_threshold, int show_image_type, int image_range) {
         condition.canny_threshold = canny_threshold;
         condition.accumelator_reso = accumelator_reso;
@@ -135,6 +178,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         lastFrameTime = 0L;
         isCalHough = false;
         condition = new HoughConditionData();
+        eulerAngleData = new EulerAngleData();
         edgeMat = new Mat();
 
         final RajawaliSurfaceView surface = new RajawaliSurfaceView(this);
@@ -147,7 +191,7 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         surface.setSurfaceRenderer(renderer);
 
         // When working with the camera, it's useful to stick to one orientation.
-        // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         // Next, we disable the application's title bar...
         // requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -161,11 +205,54 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         mOpenCvCameraView.setCvCameraViewListener(this);
         addContentView(mOpenCvCameraView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
+        angleView = new AngleView(this);
+        angleView.setAnchorView();
+        /*
         infoView = new InfoView(this);
         infoView.setAnchorView();
 
         controlView = new ControlView(this);
         controlView.setAnchorView();
+        */
+
+        currentFrame = null;
+        currentFrameIndex = 0;
+
+        /*
+        new Thread(new MyRunnable() {
+            public void run() {
+                while (true) {
+                    if (currentFrame == null || currentFrameIndex == this.lastFrameIndex) {
+                        SystemClock.sleep(10);
+                        continue;
+                    }
+                    data = CVTools.find_circle(currentFrame, condition);
+                    this.lastFrameIndex = currentFrameIndex;
+
+                    if (data != null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                infoView.setHoughResultData(data);
+                            }
+                        });
+                    }
+                }
+            }
+        }).start();
+        */
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mRotationVectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        mSensorManager.registerListener(this, mRotationVectorSensor, 100000);
+        mSensorData = new SensorData();
+    }
+
+    abstract class MyRunnable implements Runnable {
+        public int lastFrameIndex;
+        public MyRunnable() {
+            lastFrameIndex = -1;
+        }
     }
 
     @Override
@@ -200,5 +287,15 @@ public class MainActivity extends ActionBarActivity implements CameraBridgeViewB
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        mSensorData.setrVector(sensorEvent.values);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }

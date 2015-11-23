@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:text="yaw："
+            android:textColor="@color/green"/>
+        <EditText
+            android:id="@+id/angle_yaw_et"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:textColor="@color/green"
+            android:text="0"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:text="pitch："
+            android:textColor="@color/green"/>
+        <EditText
+            android:id="@+id/angle_pitch_et"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:textColor="@color/green"
+            android:text="0"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:text="roll："
+            android:textColor="@color/green"/>
+        <EditText
+            android:id="@+id/angle_roll_et"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:textColor="@color/green"
+            android:text="0"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/update_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/green"
+        android:background="@color/transparent"
+        android:text="更新"/>
+
+</LinearLayout>

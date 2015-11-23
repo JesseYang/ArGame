@@ -126,12 +126,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checked="true"
-                                android:text="显示灰度图" />
+                                android:text="显示原图" />
                             <RadioButton android:id="@+id/edge_rb"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="50dp"
-                                android:text="显示边缘检测图" />
+                                android:text="显示灰度图" />
                         </RadioGroup>
                     </LinearLayout>
                     <LinearLayout
@@ -172,12 +172,12 @@
                             <RadioButton android:id="@+id/crop_image_rb"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:checked="true"
                                 android:text="裁剪图片" />
                             <RadioButton android:id="@+id/uncrop_image_rb"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="50dp"
+                                android:checked="true"
                                 android:text="不裁剪图片 " />
                         </RadioGroup>
                     </LinearLayout>
@@ -213,6 +213,70 @@
                             android:id="@+id/crop_height_et"
                             android:layout_width="50dp"
                             android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="HSV颜色下限" />
+                        <EditText
+                            android:id="@+id/hsv_lower_h_et"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:text="160"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="，"/>
+                        <EditText
+                            android:id="@+id/hsv_lower_s_et"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:text="80"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="，"/>
+                        <EditText
+                            android:id="@+id/hsv_lower_v_et"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:text="30"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="HSV颜色上限"/>
+                        <EditText
+                            android:id="@+id/hsv_higher_h_et"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:text="180"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="，"/>
+                        <EditText
+                            android:id="@+id/hsv_higher_s_et"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:text="255"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="，"/>
+                        <EditText
+                            android:id="@+id/hsv_higher_v_et"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:text="255"/>
                     </LinearLayout>
                     <Button
                         android:id="@+id/begin_btn"

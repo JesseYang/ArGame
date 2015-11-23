@@ -11,14 +11,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
+            android:textSize="12dp"
             android:text="Canny检测上限阈值："
             android:textColor="@color/green"/>
         <EditText
             android:id="@+id/control_canny_threshold_et"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
+            android:textSize="12dp"
             android:textColor="@color/green"
             android:text="100"/>
     </LinearLayout>
@@ -30,16 +30,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
+            android:textSize="12dp"
             android:text="累加器分辨率比例："
             android:textColor="@color/green"/>
         <EditText
             android:id="@+id/control_accumelator_reso_et"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
+            android:textSize="12dp"
             android:textColor="@color/green"
-            android:text="8"/>
+            android:text="1"/>
     </LinearLayout>
 
     <LinearLayout
@@ -49,16 +49,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
+            android:textSize="12dp"
             android:text="Hough变换累加器阈值："
             android:textColor="@color/green"/>
         <EditText
             android:id="@+id/control_accumelator_threshold_et"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:textSize="16dp"
+            android:textSize="12dp"
             android:textColor="@color/green"
-            android:text="100"/>
+            android:text="30"/>
     </LinearLayout>
 
     <LinearLayout

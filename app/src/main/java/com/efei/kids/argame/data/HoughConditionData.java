@@ -1,4 +1,4 @@
-package com.efei.kids.argame;
+package com.efei.kids.argame.data;
 
 /**
  * Created by jesse on 15-11-16.
@@ -22,9 +22,9 @@ public class HoughConditionData {
     public int show_image_type;
 
     public HoughConditionData() {
-        this.accumelator_reso = 8;
+        this.accumelator_reso = 1;
         this.canny_threshold = 100;
-        this.accumelator_threshold = 100;
+        this.accumelator_threshold = 30;
         this.radius_lower = 0;
         this.radius_higher = 0;
         this.show_image_type = 1;
